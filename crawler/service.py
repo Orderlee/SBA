@@ -90,27 +90,17 @@ class Service:
 
         for abcd in mytarget:
             myhref = abcd.find('a').attrs['href']
-            print('myhref:', myhref)
-            print('_' * 30)
             myhref = myhref.replace(replace_str , '')
             result = myhref.split('&')
-            print('myhref:',myhref)
-            print('_'*30)
-            print('result:',result)
-            print('_'*30)
             mytitleid = result[0].split('=')[1]
             mykey = result[1].split('=')[1]
-            print('mytitleid:',mytitleid)
-            print('_' * 30)
-            print("myweekday:",mykey)
-            print('_' * 30)
+
             imgtag = abcd.find('img')
             mytitle = imgtag.attrs['title'].strip()
             mytitle = mytitle.replace('?', '').replace(':', '')
-            print(mytitle)
-
+            
             mysrc = imgtag.attrs['src']
-            # print(mysrc)
+            
 
             Service.saveImageFile(myfolder,mysrc, mykey, mytitle,this)
 
