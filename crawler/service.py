@@ -104,8 +104,6 @@ class Service:
 
             Service.saveImageFile(myfolder,mysrc, mykey, mytitle,this)
 
-            # break
-
             sublist = []
             sublist.append(mytitleid)
             sublist.append(mykey)
