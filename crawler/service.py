@@ -21,7 +21,7 @@ class Service:
     def create_folder_weekend(self):
         weekday_dict = {'mon':'월요일', 'tue':'화요일', 'wed':'수요일', 'thu':'목요일', 'fri':'금요일', 'sat':'토요일', 'sun':'일요일'}        
         import os, shutil
-        myfolder = 'd:\\imsi\\'
+        myfolder = './crawler/data'
 
         try :
             if not os.path.exists(myfolder):
