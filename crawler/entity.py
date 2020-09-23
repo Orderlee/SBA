@@ -10,8 +10,4 @@ class Entity:
     apikey: str = ''
     dict: object = None
     columns : object = None
-    new_folder_name :  str = ''
-    tag: str = ''
-    atrrs: str = ''
-    replace_str: str =''
     filename=''
