@@ -25,11 +25,3 @@ if __name__ == '__main__':
     api.entity.replace_str ='/webtoon/list/nhn?' 
 
     api.naver_cartoon()
-
-    api2 = Controller()
-    api2.entity.columns = ['순위','제목','변동','변동폭']
-    api2.entity.url = "http://movie.naver.com/movie/sdb/rank/rmovie.nhn"
-    api2.entity.tag ='tr'
-    api2.entity.filename= 'navermovierank.csv'
-
-    api2.movie_csv
