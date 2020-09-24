@@ -1,9 +1,12 @@
 from dataclasses import dataclass
-
+'''
+context path : ~/SBA/
+modulePath: /titanic/data/
+'''
 @dataclass
-class Entity:
+class file_reader:
 
-    context: str ='~/SBA/titanic/data/'
+    context: str =''
     fname: str =''
     train: object = None
     test: object = None
