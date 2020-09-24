@@ -2,10 +2,9 @@ from dataclasses import dataclass
 
 @dataclass
 class Entity:
-
-    context: str ='~/SBA/titanic/data/'
+    context: str = ''
     fname: str =''
     train: object = None
     test: object = None
-    id: str = ''
+    id: str= ''
     label: str =''
