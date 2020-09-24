@@ -1,7 +1,6 @@
 import sys
 sys.path.insert(0, '/users/YoungWoo/SBA')
-from util.file_handler import file_reader
-from titanic.service import Service
+from util.file_handler import FileReader
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 import numpy as np
@@ -14,9 +13,6 @@ from sklearn.svm import SVC #svm
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold # k값은 count로 의미로 이해
 from sklearn.model_selection import cross_val_score
-
-
-
 
 '''
 PassengerId  고객ID,
@@ -35,8 +31,8 @@ Embarked 승선한 항구명 C = 쉐브루, Q = 퀸즈타운, S = 사우스햄�
 
 class Service:
     def __init__(self):
-        self.entity = file_reader() #@Autowired Entitny entity (스프링에서 같은거)
-        pass  
+        self.fileReader= FileReader() #@Autowired Entitny entity (스프링에서 같은거)
+        
 
     #train은 답이 제거된 데이터셋 axis=0 가로 1은 세로
     #self를 사용하는면 다이나믹으로 진행 
@@ -44,9 +40,9 @@ class Service:
     #label 은 곧 답이 된다.
     # 머신러닝교과서 p.139  df = tensor
     def new_model(self,payload) -> object: 
-        this = self.entity  
-        this.fname = payload 
-        return pd.read(this.context + this.fname)
+        this = self.fileReader
+        this.context= '~/SBA/kaggle/data/'
+        return pd.read_csv(this.context + this.fname)
     
     @staticmethod
     def create_train(this) -> object:
@@ -54,7 +50,7 @@ class Service:
     
     @staticmethod
     def create_label(this) -> object:
-        return this.train['Survived'] 
+        return this.train['Survived']
 
     @staticmethod
     def drop_feature(this,feature) -> object:
@@ -205,14 +201,9 @@ class Service:
         return round(np.mean(score)*100,2)
 
 
-
-
-
-
-
 class Controller:
     def __init__(self):
-        self.entity = file_reader()
+        self.fileReader = FileReader()
         self.service = Service()
 
 
@@ -228,7 +219,7 @@ class Controller:
     
     def preprocessing(self,train,test):
         service = self.service
-        this = self.entity
+        this = self.fileReader
         this.train = service.new_model(train) # payload
         this.test = service.new_model(test) # payload
         this.id = this.test['PassengerId'] # machine에게 질문(question)이 됨
@@ -282,7 +273,7 @@ class Controller:
         clf.fit(this.train, this.label)
         prediction = clf.predict(this.test)
         pd.DataFrame({'PassengerId' : this.id,
-        'Survived' : prediction}).to_csv(this.context + 'submission.csv',index=False)
+        'Survived' : prediction}).to_csv('~/SBA/kaggle/data/' + 'submission.csv',index=False)
         
     
 if __name__ == '__main__':

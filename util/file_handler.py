@@ -4,7 +4,7 @@ context path : ~/SBA/
 modulePath: /titanic/data/
 '''
 @dataclass
-class file_reader:
+class FileReader:
 
     context: str =''
     fname: str =''
