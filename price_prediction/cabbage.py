@@ -4,8 +4,10 @@ from util.file_handler import FileReader
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+from dataclasses import dataclass
 
-class Model:
+@dataclass
+class Cabbage:
 
     #멤버 변수
     year: int = 0
@@ -57,6 +59,7 @@ class Model:
 
 
     def service(self):
+        print('############### service ##################')
         X = tf.compat.v1.placeholder(tf.float32, shape=[None,4])
         # year,avgTemp,minTemp,maxTemp,rainFall,avgPrice 에서
         # avgTemp,minTemp,maxTemp,rainFall 입력받겠다
@@ -77,9 +80,10 @@ class Model:
         # 이 변수를 결정하는 것은 외부값이 아니라 텐서가 내부에서 사용하는 변수
         # 기존 웹에서 사용하는 변수는 placholder 
         saver = tf.train.Saver()
-        with tf.Sesstion() as sess:
+        with tf.Session() as sess:
             sess.run(tf.compat.v1.global_variables_initializer())
             saver.restore(sess, self.context+'saved_model.ckpt')
+            print(f'avgTemp:{self.avgTemp}, minTemp:{self.minTemp}, maxTemp:{self.maxTemp},rainFall:{self.rainFall}')
             data = [[self.avgTemp, self.minTemp, self.maxTemp, self.rainFall],]
             arr = np.array(data, dtype = np.float32)
             dict = sess.run(tf.matmul(X, W) + b, {X: arr[0:4]})
@@ -90,7 +94,7 @@ class Model:
 
 
 if __name__ == '__main__':
-    m = Model()
+    cabbage = Cabbage()
     # dframe = m.new_model('price_data.csv')
     # print(dframe.head())
     # m.create_tf(dframe)
