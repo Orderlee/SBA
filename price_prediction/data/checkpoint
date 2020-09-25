@@ -1,0 +1,2 @@
+model_checkpoint_path: "/users/YoungWoo/SBA/price_prediction/data/saved_model.ckpt"
+all_model_checkpoint_paths: "/users/YoungWoo/SBA/price_prediction/data/saved_model.ckpt"
