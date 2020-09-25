@@ -6,6 +6,9 @@
     <title>Document</title>
 </head>
 <body>
+    {% if name %}
+    <p>{{name}} 접속중입니다. </p>
+    {% endif %}
     <h1>배추가격 예측 시스템</h1>
     <form action="/cabbage" method="POST">
     <!--avgTemp,minTemp,maxTemp,rainFall 변수 4개를 입력받아서-->
@@ -19,3 +22,4 @@
     <p>예상가격 : {{result}} </p>
     {% endif %}
 </body>
+</html>

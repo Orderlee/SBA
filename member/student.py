@@ -2,16 +2,19 @@ import sqlite3
 
 class Student:
     id: str = ''
-    paw: str = ''
+    pwd: str = ''
     name: str = ''
     birth: str = ''
     regdate: str = ''
     
+
+
+# DAO = Database Access Object (데이터베이스에 접속하는 객체)
+class StudentDao:
+
     def __init__(self):
         self.conn = sqlite3.connect('sqlite.db')
-        self.curser = conn.cursor()
-
-class StudentDao:
+        self.cursor = self.conn.cursor()
 
     def create(self):
         # cursor(커서) : 데이터베이스 작업을 수행하고 있는 메모리 공간
@@ -22,34 +25,36 @@ class StudentDao:
         except sqlite3.OperationalError as err:
             print('테이블이 존재하지 않습니다.')
 
-        self.cursor.execute(
-            ''' create table students (id text primary key,pwd text, name text, birth text)'''
+        cursor.execute(
+            ''' create table students (id text primary key, pwd text, name text, birth text)'''
             
         )
-        cursor.commit()
+        self.conn.commit()
 
-    def insert_one(self,payload):
+    def insert_one(self,student):
         # payload = ('lee','이승기','1989/11/11')
         cursor = self.cursor
-        sql ="insert into students(id, pwd, name, birth) values ('{student.id}','{student.pwd}','{student.name}','{studnet,birth}')"
-        self.cursor.execute(sql)
-        self.cursor.commint()
+        sql ="""
+        insert into students(id,pwd,name,birth) values(?,?,?,?)
+        """
+        cursor.execute(sql, (student.id, student.pwd, student.name, student.birth))
+        self.conn.commit()
 
     def insert_many(self):
-        data = [('jo','조용필','1985/12/31'),('ko','고아라','1970/07/17'),('sim','심형래','1950/03/22')]
+        cursor = self.cursor
+        data = [('jo', '1','조용필','1985/12/31'),('ko','1','고아라','1970/07/17'),('sim','1','심형래','1950/03/22')]
         # ?: placeholder: 치환되어야할 어떤 대상
         # 데이터 유형에 상관없이 외따옴표 적지 마라
         sql="""
-        INSERT INTO member(userid, password, phone) VALUES(?,?,?)
+        insert into students(id, pwd, name, birth) values (?, ?, ?, ?)
         """
-        self.conn.executemany(sql,data)
-        self.cursor.commit()
+        cursor.executemany(sql, data)
+        self.conn.commit()
 
     def fetch_by_id(self,id):
         cursor = self.cursor
-        findID = 'ko'
-        sql = f"select * from students where id = '%{id}'" 
-        cursor.execute(sql)
+        sql = "select * from students where id = '%s'" 
+        cursor.execute(sql, (id))
         result = cursor.fetchone() # fetch 해줘야함
         print(type(result)) # 튜플형태로 리턴
         if result != None:
@@ -59,7 +64,6 @@ class StudentDao:
 
         else:
             print('문제가 있습니다.')
-        print()
         return result
 
     def fetch_list(self):
@@ -68,51 +72,51 @@ class StudentDao:
         for id , name, birth in cursor.execute(sql): # 다중 데이터는 for 문으로 바로 출력가능
             print(id + '#' + name + '#' + birth)
         print('-'*20)
+        cursor.execute(sql)
+        return cursor.fetchall()
 
     def fetch_by_name(self, name):
         cursor = self.cursor
-        sql = f"select * from students where name like '%{name}%'"
-        cursor.execute(sql)
+        sql = """
+        select * from students where name like '%?%'
+        """
+        cursor.execute(sql, (name))
         return cursor.fetchall()
 
     def fetch_count(self):
         cursor = self.cursor
-        sql = f'select count(*) from students'
-        cursor = self.cursor.execute(sql)
-        rows = cursor.fetchall()
-        count = 0 
-        for i in rows:
-            count += 1
-        return count.rowcount
+        sql = """ select count(*) from studnets"""
+        cursor.execute(sql)
+        return cursor.fetchone()
 
     def fetch_all(self):
         ccursor = self.cursor
         cursor.execute('select * from students')
-        return cursor.etchall()
+        return cursor.fetchall()
 
     def login(self,id,pwd):
         cursor = self.cursor
         sql ="""
         select * from students where id like ? and pwd like ?
         """
-        data = [id,pwd]
-        cursor.execute(sql,data)
-        return cursor.fetchone()
+        cursor.execute(sql, (id, pwd))
+        temp = cursor.fetchone()
+        return temp[2]
 
 
-    def update(self):
+    def update(self, id, name):
         # 'id'가 'lee'인 친구의 이름을 '이문제소 바꾸세요'
         cursor = self.cursor
-        sql = f"update students set name = '{name}' where id ='{id}'"
-        cursor.execute(sql)
+        sql = """ update students set name = ? where id = ?"""
+        cursor.execute(sql, (id, name))
         print(cursor.rowcount) #성공여부
         self.conn.commit()
 
-    def delete(self):
-        # 'id'가 'sim'인 친구의 데이터를 삭제
+    def delete(self,id):
+        # 'id' 데이터를 삭제
         cursor = self.cursor
-        sql = f"delete from students where id ='%{id}'"
-        cursor.execute(sql)
+        sql = """delete from students where id = ?"""
+        cursor.execute(sql,(id))
         print(cursor.rowcount)
         self.conn.commit()
 
@@ -120,8 +124,16 @@ class StudentDao:
         # conn.close() web 상대에서는 close하지 않음
 
 class StudentService:
-    pass
+    def __init__(self):
+        self.dao = StudentDao()
 
-class StudentController:
-    pass
+    def add_student(self,student):
+        print('### add_student ###')
+        self.dao.create()
+        self.dao.insert_many()
+        print(f'입력된 학생들의 수: {self.dao.fetch_count()}')
+
+    def login(self,id,pwd):
+        return self.dao.login(id,pwd)
+
 
