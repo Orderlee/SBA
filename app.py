@@ -37,7 +37,7 @@ def cabbage():
     cabbage.maxTemp = maxTemp
     cabbage.rainFall = rainFall
     result = cabbage.service()
-    print(f'PREDICTION:{result}')
+    print(f'PREDICTION: {result}')
     render_params={}
     render_params['result'] = result
     return render_template('index.html', **render_params)
@@ -56,6 +56,7 @@ def signup():
     student.birth = birth
     service = StudentService()
     service.add_student(student)
+    return render_template(f'login.html')
 
 @app.route('/signin',methods=['POST'])
 def signin():
@@ -63,8 +64,7 @@ def signin():
     id = request.form['id']
     pwd = request.form['pwd']
     service = StudentService()
-    student = service.login(id,pwd)
-    print(f'{studnet.name} 접속중...')
+    name = service.login(id,pwd)
     render_params = {}
     render_params['name'] = name
     return render_template(f'index.html', **render_params)
