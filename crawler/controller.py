@@ -11,17 +11,14 @@ class Controller:
     def naver_cartoon(self):
         service = self.service
         this = self.entity
-        soup = service.get_url(this)
-        myfolder = service.create_folder_from_dict(this)
-        mytarget = service.setting_target(soup,this)
-        service.loop_fun(mytarget,this,myfolder)
+        soup = service.url_open('https://comic.naver.com/webtoon/weekday.nhn')
+        myfolder = '/users/YoungWoo/SBA/crawler/image'
+        weekday_dict = {'mon':'월요일', 'tue':'화요일', 'wed':'수요일', 'thu':'목요일', 'fri':'금요일', 'sat':'토요일', 'sun':'일요일'}
+        service.create_weekday_folder(weekday_dict, myfolder)
+        mylist = service.create_webtoon_list(soup, myfolder, weekday_dict)
+        service.save_csv_file(mylist, 'cartoon.csv')
 
 if __name__ == '__main__':
-    api = Controller()
-    api.entity.dict= {'mon': '월요일', 'tue': '화요일', 'wed': '수요일', 'thu': '목요일', 'fri': '금요일', 'sat': '토요일', 'sun': '일요일'}
-    api.entity.columns = {'타이틀 번호','요일','제목','링크'}
-    api.entity.filename = 'cartoon.csv'
-    api.entity.url = 'https://comic.naver.com/webtoon/weekday.nhn'
-    api.entity.replace_str ='/webtoon/list/nhn?' 
 
-    api.naver_cartoon()
+    api = Controller()
+    api.naver_cartoon

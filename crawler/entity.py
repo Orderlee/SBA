@@ -8,6 +8,9 @@ class Entity:
     path: str = ''
     api: str = ''
     apikey: str = ''
-    dict: object = None
-    columns : object = None
-    filename=''
+    csv_filename: str = ''
+    columns: object =None
+    tag: str =''
+    attrs: str = ''
+    weekday_dict: str = ''
+    replace_txt: str = ''
