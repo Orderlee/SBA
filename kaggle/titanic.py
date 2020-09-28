@@ -187,7 +187,7 @@ class Controller:
     def __init__(self):
         self.entity = FileReader()
         self.kaggle = os.path.join(basedir,'kaggle')
-        sefl.data = os.path.ojin(self.kaggle,'data')
+        self.data = os.path.join(self.kaggle,'data')
         self.service = Service()
     
     def modeling(self,train, test):
