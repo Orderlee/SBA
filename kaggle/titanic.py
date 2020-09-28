@@ -1,6 +1,7 @@
-import sys
 import os
+import sys
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from config import basedir
 from util.file_handler import FileReader
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
@@ -22,14 +23,17 @@ from sklearn.model_selection import cross_val_score
 # (다이나믹) 인스턴스 객체
 class Service:
     def __init__(self):
-        self.entity = FileReader() 
+        self.entity = FileReader()
+        self.kaggle = os.path.join(basedir,'kaggle')
+        self.data = os.path.join(self.kaggle,'data')
+
     # payload(컴퓨팅)
     # 전송되는 데이터
     def new_model(self, payload)-> object:
         this = self.entity
-        this.context ='/Users/YoungWoo/SBA/kaggle/data/'
+        this.data =self.data
         this.fname = payload
-        return pd.read_csv(this.context + this.fname)
+        return pd.read_csv(os.path.join(self.data, this.fname))
 
     @staticmethod
     def create_train(this)-> object:
@@ -182,6 +186,8 @@ class Service:
 class Controller:
     def __init__(self):
         self.entity = FileReader()
+        self.kaggle = os.path.join(basedir,'kaggle')
+        sefl.data = os.path.ojin(self.kaggle,'data')
         self.service = Service()
     
     def modeling(self,train, test):
@@ -247,8 +253,9 @@ class Controller:
         prediction = clf.predict(this.test)
         pd.DataFrame(
             {'PassengerId': this.id , 'Survived': prediction}
-        ).to_csv('/Users/YoungWoo/SBA/kaggle/data/submission.csv',index =False)
+        ).to_csv(os.path.join(self.data,'submission.csv'),index =False)
 
 if __name__ =='__main__':
+    print(f'***************** {basedir} **************')
     ctrl = Controller()
     ctrl.submit('train.csv', 'test.csv')
